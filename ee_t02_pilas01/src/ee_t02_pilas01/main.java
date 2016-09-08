@@ -12,66 +12,78 @@ public class main {
 		/** Aquí se lee la cadena inicial, con todo y el número entero**/
 		x.Determinar(3,"{[()]}","{[(])}","{{[[(())]]}}");
 	}
-	/** Este método separa las n cadenas en dos y las pone en pilas diferentes**/
+	/** Este método determina si las cadenas están balanceadas o no**/
 	public void Determinar(Integer n,String...cad){
-		if (n == cad.length){
+		/** Primero se comprueba que el entero instroducido coincida con las
+		 *  cadenas enviadas, de no ser así, se notifica**/
+		if(n != cad.length){
+
+			System.out.println("El número especificado no coincide con la cantidad"
+					+ " de cadenas introducidas");
+		}else {
+			
+		String d;boolean flag;
+		/** Se llama al método "restricciones" para comprobar que los números estén
+		 *  dentro del rango 1 y 10^3 **/
+		if (restricciones(n,cad)){
+			/** Se inicia un ciclo para cada cadena enviada **/
 			for (int i=0;i < n; i++){
-				/** primero se comprueba que la cadena tenga un número par de caractéres
-				 *  de no ser así, se envía de inmediato un "No", pues no es posible que
-				 *  la cadena esté balanceada
+				/** Si la cadena es impar, de inmediato se envía un "No", pues no es
+				 *  posible que esté balanceada
 				 */
 				if (cad[i].length() % 2 == 0){
-					int mitad = (cad[i].length())/2;
-					/** Aquí se crean y se llenan las pilas **/
-					Pila p1 = new Pila(mitad);
-					Pila p2 = new Pila(mitad);
-					for (int j = 0; j<mitad; j++ ){
-						p1.push(cad[i].charAt(j)+"");
+					/** Se crea la pila**/
+					Pila p = new Pila(cad[i].length());
+					int j=0;
+					/** En este ciclo se hace la comparación para identificar
+					 *  los signos que abren y los que cierran **/
+					flag=true;
+					while(flag){
+						if(cad[i].charAt(j) == '{' || cad[i].charAt(j) =='[' || cad[i].charAt(j)=='('){
+							p.push(cad[i].charAt(j)+"");
+						}else{
+							d= p.pop() + cad[i].charAt(j);
+							if( d.equals("[]") || d.equals("()") || d.equals("{}")) {
+								
+								flag=true;
+							}else{
+								System.out.println("No");
+								break;
+							}
+						}
+						/** Al final si ocurre un desbordamiento, se envía un "Sí"
+						 *  pues todos los elementos encontraron su par**/
+						if(p.peek().equals("Subdesbordamiento")){
+							flag=false;
+							System.out.println("Sí");
+						}
+						j++;
 					}
-					for (int f = (mitad*2)-1;f>=mitad;f--){
-						p2.push(cad[i].charAt(f)+"");
-					}
-					/** Se envían las dos pilas para compararlas **/
-					Comparar(p1,p2);
 				}else{
 					System.out.println("No");
 				}
 			}
 		}else{
-			System.out.println("El número especificado no coincide con la cantidad"
-					+ " de cadenas introducidas");
+			System.out.println("Valores demasiado grandes.");
+		}
 		}
 	}
-	/** Este método compara dos pilas para saber si sus elementos coinciden dígito
-	 * por dígito
-	 */
-	public void Comparar(Pila p1, Pila p2){
-		String a , b ;
-		boolean r;
-		/** Este ciclo se detiene cuando uno de los caracteres de las pilas
-		 *  sea diferente, o cuando haya un subdesbordamiento
-		 */
-		do{
-			a = p1.pop();
-		    b = p2.pop();
-		    if ((a.equals("[") && b.equals("]"))){
-		    	r=true;
-		    }else if((a.equals("(") && b.equals(")"))){
-		    	r=true;
-		    }else if((a.equals("{") && b.equals("}"))){
-		    	r=true;
-		    }else{r=false;}
-		    if(a.equals("Subdesbordamiento")){
-		    	r=false;
-		    }
-		}while(r);
-		/** Si al final ocurre un subdesbordamiento, significa que la cadena
-		 * está balanceada y se imprime ese caso o el contrario.
-		 */
-		if (a.equals("Subdesbordamiento")){
-			System.out.println("Sí");
+	/** Este método solamente evalúa que las cadenas se encuentren en el rango
+	 *  especificado y devuelve una respuesta booleana**/
+	public boolean restricciones(Integer n, String...args){
+		boolean r=true;
+		if(n>=1 && n<=(10*10*10)){
+			for (int i=0;i < n; i++){
+				if(args[i].length()>=1 && args[i].length()<=(10*10*10)){
+					r=true;
+				}else{
+					r=false;
+					break;
+				}
+			}
 		}else{
-			System.out.println("No");
+			r=false;
 		}
+		return r;
 	}
 }
